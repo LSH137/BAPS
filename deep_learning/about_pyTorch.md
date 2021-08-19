@@ -46,9 +46,65 @@ reference: https://wikidocs.net/book/2788
 
 ## 텐서 조작하기
 
+### Vector, Matrix, Tensor
+
+#### vector, Matrix, Tensor
+
+> vector = 1차원 Tensor   
+>
+> matrix = 2차원 Tensor   
 
 
 
+#### 텐서의 모양 (PyTorch Tensor Shape Convention)    
 
+> - 2D Tensor  
+>
+>   (텐서의 크기) = batch size * dimension   
+>
+>   batch size: 훈련 데이터 개수(행 수)   
+>
+>   dimension: 훈련 데이터 하나가 가지고 있는 정보 수(열 수 )   
+>
+> - 3D Tensor   
+>
+>   (텐서의 크기) = batch size * dim * width   
 
+#### numpy로 텐서 만들기
+
+> * 1D
+>
+>   [숫자, 숫자, 숫자] 의 형식으로 만들고 이것을 np.array()로 감싸주면 된다   
+>
+>   Numpy의 인덱스는 지금 알고있는 파이썬 인덱스와 동일하다   
+>
+>   슬라이싱도 가능하다   
+>
+>   t = [0, 1, 2, 3, 4, 5, 6]
+>
+>   -> rank = 1
+>
+>   -> shape =(7, )
+>
+> * 2D
+>
+>   t = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])     
+>
+>   -> rank = 2	// t.ndim 으로 알아낸다     
+>
+>   -> shape = (4, 3)	//t.shape 으로 알아낸다   
+
+#### PyTorch Tensor Allocation
+
+>t.dim()을 이용하여 차원을 알아낸다    
+>
+>t.size()를 이용하여 크기를 확인한다    
+>
+>* 1D
+>
+>  numpy, python과 동일
+>
+>* 2D
+>
+>  t = torch.FloatTensor([1., 2., 3.], [4., 5., 6.], [7., 8., 9.], [10., 11.,12.])
 
