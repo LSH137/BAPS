@@ -1,0 +1,25 @@
+from urllib.request import urlopen 
+from urllib.parse import urlencode, unquote, quote_plus 
+import urllib 
+import requests 
+import json 
+import pandas as pd
+
+
+
+url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
+queryParams = '?' + urlencode({ quote_plus('ServiceKey') : 'ol01kPg%2BpHOWuQZmRQmSc%2FtoW07yZ%2BZMGDokNgR2Q2F7rsx8wmL7D3j1QSOKsyZm0Am%2F0ko6FHX%2FZye2sXyQAQ%3D%3D', 
+                               quote_plus('pageNo') : '1', 
+                               quote_plus('numOfRows') : '10', 
+                               quote_plus('dataType') : 'json', 
+                               quote_plus('dataCd') : 'ASOS', 
+                               quote_plus('dateCd') : 'HR', 
+                               quote_plus('startDt') : '20100101', #시작 날짜 
+                               quote_plus('startHh') : '01', #시작 시각
+                               quote_plus('endDt') : '20100101', #종료 날짜 
+                               quote_plus('endHh') : '02',  # 종료 시각
+                               quote_plus('stnIds') : '108' })
+req = urllib.request.Request(url + unquote(queryParams))
+response_body = urlopen(req).read()
+dic=json.loads(response_body)
+print(dic)
