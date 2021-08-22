@@ -8,7 +8,7 @@ import pandas as pd
 
 
 url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
-queryParams = '?' + urlencode({ quote_plus('ServiceKey') : 'ol01kPg%2BpHOWuQZmRQmSc%2FtoW07yZ%2BZMGDokNgR2Q2F7rsx8wmL7D3j1QSOKsyZm0Am%2F0ko6FHX%2FZye2sXyQAQ%3D%3D', 
+queryParams = '?' + urlencode({ quote_plus('ServiceKey') : 'your key', 
                                quote_plus('pageNo') : '1', 
                                quote_plus('numOfRows') : '10', 
                                quote_plus('dataType') : 'json', 
