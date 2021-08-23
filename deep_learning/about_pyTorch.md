@@ -90,21 +90,90 @@ reference: https://wikidocs.net/book/2788
 >
 >   t = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])     
 >
->   -> rank = 2	// t.ndim 으로 알아낸다     
+>   -> rank = 2	// t.ndim 으로 알아낸다      
 >
->   -> shape = (4, 3)	//t.shape 으로 알아낸다   
+>   -> shape = (4, 3)	//t.shape 으로 알아낸다     
 
-#### PyTorch Tensor Allocation
+#### PyTorch Tensor Allocation   
 
 >t.dim()을 이용하여 차원을 알아낸다    
 >
->t.size()를 이용하여 크기를 확인한다    
+>t.size()를 이용하여 크기를 확인한다      
 >
->* 1D
+>* 1D   
 >
->  numpy, python과 동일
+> numpy, python과 동일   
 >
->* 2D
+>* 2D   
 >
->  t = torch.FloatTensor([1., 2., 3.], [4., 5., 6.], [7., 8., 9.], [10., 11.,12.])
+>t = torch.FloatTensor([1., 2., 3.], [4., 5., 6.], [7., 8., 9.], [10., 11.,12.])      
+>
+>t[0:2] -> [[1., 2., 3.], [4., 5., 6.]]   
+>
+>t[0:2, 1] -> t[0:2]에 포함된 리스트 중 인덱스가 1인 것들만 뽑아온다   
+
+#### Broadcasting
+
+>행렬의 연산에서 행렬의 크기에 대한 제한이 있다. 딥러닝할때 불가피하게 이 수학적 규칙을 벗어날 수 있으므로, 파이토치에서는 자동으로 크기를 맞추어 연산을 수행하는 브로드캐스팅이라는 기능을 제공한다.   
+>
+>* 같은 크기의 행렬을 연산   
+>
+>  m1 = torch.FloatTensor([[3, 3]])   
+>
+>  m2 = torch.FloatTensor([[2, 2]])   
+>
+>  print(m1 + m2) -> tensor([[5., 5.]])   
+>
+>* 다른 크기의 행렬을 이용한 연산   
+>
+>  m1 = torch.FloatTensor([[1, 2]])   
+>
+>  m2 = torch.FloatTensor([3]) -> [3, 3]으로 연산된다   
+>
+>  print(m1 + m2) -> tensor([[4., 5.]])   
+>
+>  -----------------------------------------------------------
+>
+>  m1 = torch.FloatTensor([[1, 2]])   
+>
+>  m2 = torch.FloatTensor([[3], [4]])   
+>
+>  print(m1 + m2) -> [1, 2], [1, 2] + [3, 3], [4, 4] 로 연산 -> tensor([4., 5.], [5., 6])   
+
+#### Matrix Multiplication Vs. Multiplication
+
+>행렬 곱셈: .matmul    
+>
+>```python
+>m1 = torch.FLoatTensor([[1, 2], [3, 4]])
+>m2 = torch.FloatTensor([[1], [2]])
+>
+>print("Shape of Matrix 1:  ", m1.shape)
+>print("Shape of Matrix 2: ", m2.shape)
+>print(m1.matmul(m2))
+>#tensor([[ 5.],
+>#        [11.]])
+>```
+>
+>원소 별 곱셈: .mul  
+>
+>```python
+>m1 = torch.FloatTensor([[1, 2], [3, 4]])
+>m2 = torch.FloatTensor([[1], [2]])
+>print('Shape of Matrix 1: ', m1.shape) # 2 x 2
+>print('Shape of Matrix 2: ', m2.shape) # 2 x 1
+>print(m1 * m2) # 2 x 2
+>print(m1.mul(m2))
+>
+>#tensor([[1., 2.],
+>#        [6., 8.]])
+>#tensor([[1., 2.],
+>#        [6., 8.]])
+>```
+>
+>-> Broadcasting이 적용됨
+>
+>
+
+
 
