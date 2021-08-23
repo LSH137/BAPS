@@ -120,7 +120,7 @@ reference: https://wikidocs.net/book/2788
 >```python
 >  m1 = torch.FloatTensor([[3, 3]])   
 >  m2 = torch.FloatTensor([[2, 2]])   
->  print(m1 + m2) -> tensor([[5., 5.]])   
+>  print(m1 + m2) # tensor([[5., 5.]])   
 >```
 >* 다른 크기의 행렬을 이용한 연산   
 >```python
@@ -170,17 +170,15 @@ reference: https://wikidocs.net/book/2788
 
 #### mean   
 
->t = torch.FLoatTensor([[1, 2], [3, 4]])   
+>```python
+>t = torch.FloatTensor([[1, 2], [3, 4]])
+>print(t.mean()) -> tensor(2.5000)
+>t.mean(dim=0) # 입력에서 첫 번째 차원을 제거한다 -> 결과가 행이 제거되고 열만 있는 벡터
 >
->print(t.mean()) -> tensor(2.5000)   
->
->t.mean(dim=0) -> 입력에서 첫 번째 차원을 제거한다 -> 결과가 행이 제거되고 열만 있는 벡터
->
->1과 3의 평균을 구하고, 2와 4의 평균을 구한다 -> [2., 3.]
->
->t.mean(dim=1) -> 입력에서 두 번째 차원을 제거한다 -> 결과가 열이 제거되고 행만 있는 벡터
->
->t.mean(dim=-1) : 마지막 차원을 결과에서 제거
+>#1과 3의 평균을 구하고, 2와 4의 평균을 구한다 -> [2., 3.]
+>t.mean(dim=1) # 입력에서 두 번째 차원을 제거한다 -> 결과가 열이 제거되고 행만 있는 벡터
+>t.mean(dim=-1) # 마지막 차원을 결과에서 제거
+>```
 
 #### sum
 
@@ -228,5 +226,17 @@ reference: https://wikidocs.net/book/2788
 >print(ft.squeeze().shape)
 >#tensor([0., 1., 2.])
 >#torch.Size([3])
+>```
+
+#### Unsqueeze
+
+>특정 위치에 1인 차원을 추가한다
+>
+>```python
+>ft = torch.Tensor([0, 1, 2])
+>print(ft.shape) # torch.Size([3])
+>print(ft.unsqueeze(0)) # 인덱스가 0번부터 시작하므로 0은 첫번째 차원을 의미
+># tensor([[0., 1., 2.]])
+>print(ft.unsqueeze(0).shape) # torch.Size([1, 3])
 >```
 
