@@ -171,9 +171,33 @@ reference: https://wikidocs.net/book/2788
 >#        [6., 8.]])
 >```
 >
->-> Broadcasting이 적용됨
+>-> Broadcasting이 적용됨   
+
+#### mean   
+
+>t = torch.FLoatTensor([[1, 2], [3, 4]])   
 >
+>print(t.mean()) -> tensor(2.5000)   
 >
+>t.mean(dim=0) -> 입력에서 첫 번째 차원을 제거한다 -> 결과가 행이 제거되고 열만 있는 벡터
+>
+>1과 3의 평균을 구하고, 2와 4의 평균을 구한다 -> [2., 3.]
+>
+>t.mean(dim=1) -> 입력에서 두 번째 차원을 제거한다 -> 결과가 열이 제거되고 행만 있는 벡터
+>
+>t.mean(dim=-1) : 마지막 차원을 결과에서 제거
+
+#### sum
+
+>```python
+>t = torch.FloatTensor([[1, 2], [3, 4]])
+>print(t)
+>
+>print(t.sum()) # 단순히 원소 전체의 덧셈을 수행 -> 10
+>print(t.sum(dim=0)) # 행을 제거한 결과를 반환 -> [4, 6]
+>print(t.sum(dim=1)) # 열을 제거한 결과를 반환 -> [3, 7]
+>print(t.sum(dim=-1)) # 마지막 차원을 제거한 결과를 반환 -> [3, 7]
+>```
 
 
 
