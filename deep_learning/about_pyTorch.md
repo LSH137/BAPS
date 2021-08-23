@@ -117,28 +117,23 @@ reference: https://wikidocs.net/book/2788
 >행렬의 연산에서 행렬의 크기에 대한 제한이 있다. 딥러닝할때 불가피하게 이 수학적 규칙을 벗어날 수 있으므로, 파이토치에서는 자동으로 크기를 맞추어 연산을 수행하는 브로드캐스팅이라는 기능을 제공한다.   
 >
 >* 같은 크기의 행렬을 연산   
->
+>```python
 >  m1 = torch.FloatTensor([[3, 3]])   
->
 >  m2 = torch.FloatTensor([[2, 2]])   
->
 >  print(m1 + m2) -> tensor([[5., 5.]])   
->
+>```
 >* 다른 크기의 행렬을 이용한 연산   
->
+>```python
 >  m1 = torch.FloatTensor([[1, 2]])   
->
->  m2 = torch.FloatTensor([3]) -> [3, 3]으로 연산된다   
->
->  print(m1 + m2) -> tensor([[4., 5.]])   
->
->  -----------------------------------------------------------
->
+>  m2 = torch.FloatTensor([3]) # [3, 3]으로 연산된다   
+>  print(m1 + m2) # tensor([[4., 5.]])   
+>```
+> -----------------------------------------------------------
+>```python
 >  m1 = torch.FloatTensor([[1, 2]])   
->
 >  m2 = torch.FloatTensor([[3], [4]])   
->
->  print(m1 + m2) -> [1, 2], [1, 2] + [3, 3], [4, 4] 로 연산 -> tensor([4., 5.], [5., 6])   
+>  print(m1 + m2)# [1, 2], [1, 2] + [3, 3], [4, 4] 로 연산 -> tensor([4., 5.], [5., 6])   
+> ```
 
 #### Matrix Multiplication Vs. Multiplication
 
@@ -190,14 +185,48 @@ reference: https://wikidocs.net/book/2788
 #### sum
 
 >```python
->t = torch.FloatTensor([[1, 2], [3, 4]])
+>t = torch.FloatTensor([[1, 2], 
+>                       [3, 4]])
 >print(t)
 >
 >print(t.sum()) # 단순히 원소 전체의 덧셈을 수행 -> 10
->print(t.sum(dim=0)) # 행을 제거한 결과를 반환 -> [4, 6]
->print(t.sum(dim=1)) # 열을 제거한 결과를 반환 -> [3, 7]
->print(t.sum(dim=-1)) # 마지막 차원을 제거한 결과를 반환 -> [3, 7]
+>print(t.sum(dim=0)) # 행을 1개로 만든 결과를 반환 -> [4, 6]
+>print(t.sum(dim=1)) # 열을 1개로 만든 결과를 반환 -> [3, 7]
+>print(t.sum(dim=-1)) # 마지막 차원을 1개로 만든 결과를 반환 -> [3, 7]
 >```
 
+#### 최대(Max)와 ArgMax
 
+>Max는 원소의 최댓값을 반환하고, ArgMax는 최대값을 가진 인덱스를 리턴한다.
+>
+>```python
+>t = torch.FloatTensor([[1, 2], 
+>                       [3, 4]])
+>print(t)
+>print(t.max()) #->tensor(4.)
+>print(t.max(dim=0)) #첫 번째 차원을 1줄로(행을 1줄로 -> 열끼리 비교)
+>#-> tensor([3., 4.]), tensor([1, 1])
+>#max에 dim 인자를 주면 argmax도 같이 반환한다.
+>#argmax -> 3이 첫 번째 열에서 1의 인덱스를 가진다, 4가 두번째 열에서 1의 인덱스를 가진다
+>print('Max: ', t.max(dim=0)[0]) # max값만 가져온다
+>print('Argmax: ', t.max(dim=0)[1]) # argmax값만 가져온다
+>```
+
+#### Squeeze
+
+>차원이 1인 경우에는 해당 차원을 제거한다.
+>
+>```python
+>ft = torch.FloatTensor([[0], [1], [2]])
+>print(ft)
+>print(ft.shape)
+>#tensor([[0.],
+>#        [1.],
+>#        [2.]])
+>#torch.Size([3, 1])
+>print(ft.squeeze())
+>print(ft.squeeze().shape)
+>#tensor([0., 1., 2.])
+>#torch.Size([3])
+>```
 
