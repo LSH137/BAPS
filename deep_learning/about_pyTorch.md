@@ -210,6 +210,50 @@ reference: https://wikidocs.net/book/2788
 >print('Argmax: ', t.max(dim=0)[1]) # argmax값만 가져온다
 >```
 
+#### View
+
+>원소의 수를 유지하면서 텐서의 크기를 변경. 중요
+>
+>Numpy의 Reshape와 같은 역할
+>
+>```python
+>t = np.array([[[0, 1, 2], 
+>               [3, 4, 5]], 
+>              [[6, 7, 8], 
+>               [9, 10, 11]]]) # 3차원 텐서
+>ft = torch.FloatTensor(t)
+>print(ft.shape) # torch.Size([2, 2, 3])
+>```
+>
+>* 3차원 텐서를 2차원 텐서로 변경
+>
+>  ```python
+>  print(ft.view([-1, 3])) # ft라는 텐서를 (?, 3)의 크기로 변경
+>  # -> tensor([[0., 1., 2.], 
+>  #			[3., 4., 5.], 
+>  #			[6., 7., 8.], 
+>  #			[9., 10., 11.]])
+>  print(ft.view([-1, 3].shape)) # torch.Size([4, 3])
+>  ```
+>
+>  view([-1, 3]): -1은 첫 번째 차원은 파이토치가 알아서 하는걸로. 3은 두번째 차원의 길이를 3이 되도록 하라는 의미.
+>
+>  * view는 기본적으로 변경 전과 후의 원소 개수가 유지되어야 함
+>  * 파이토치의 view는 사이즈가 -1로 설정되면 다른 차원으로 해당 값을 유추
+>
+>* 3차원 텐서에서 3차원 텐서로 크기 변경
+>
+>  ```python
+>  print(ft.view([-1, 1, 3]))
+>  # tensor([[[0., 1., 2.]], 
+>  #		[[3., 4., 5.]], 
+>  #		[[6., 7., 8.]], 
+>  #		[[9., 10., 11.]]])
+>  print(ft.view([-1, 1, 3]).shape) # torch.Size([4, 1, 3])
+>  ```
+>
+>  
+
 #### Squeeze
 
 >차원이 1인 경우에는 해당 차원을 제거한다.
@@ -230,13 +274,184 @@ reference: https://wikidocs.net/book/2788
 
 #### Unsqueeze
 
->특정 위치에 1인 차원을 추가한다
+>특정 위치에 1인 차원을 추가한다 (첫 번째 차원 -> 인덱스 0)
 >
 >```python
 >ft = torch.Tensor([0, 1, 2])
 >print(ft.shape) # torch.Size([3])
 >print(ft.unsqueeze(0)) # 인덱스가 0번부터 시작하므로 0은 첫번째 차원을 의미
 ># tensor([[0., 1., 2.]])
->print(ft.unsqueeze(0).shape) # torch.Size([1, 3])
+>print(ft.unsqueeze(0).shape) # torch.Size([1,3])
+>
+>print(ft.unsqueeze(-1)) # -1은 마지막 인덱스 -> 맨 뒤에 차원 추가
+># tenosr([[0.], 
+>#		[1.], 
+>#		[2.]])
+>print(ft.unsqueeze(-2).shape) # torch.Size([3, 1])
+>```
+>
+>view로도 구현 가능하다
+>
+>2차원으로 바꾸고 첫 번째 차원은 1로 바꾼다
+>
+>```python
+>print(ft.view(1, -1)) # tensor([[0., 1., 2.]])
+>print(ft.view(1, -1).shape) # torch.Size([1, 3])
 >```
 
+#### Type Casting
+
+> * 텐서에는 자료형이 있다
+> * GPU연산을 위한 자료형도 있다 (torch.cuda.FloatTensor)
+>
+> ```python
+> lt = torch.LongTensor([1, 2, 3, 4])
+> print(lt)
+> print(lt.float()) # float형으로 type casting->tensor([1., 2., 3., 4.])
+> 
+> bt = torch.ByteTensor([True, False, False, True])
+> print(bt) # tensor([1, 0, 0, 1], dtype=torch.uint8)
+> print(bt.long()) # tensor([1, 0, 0, 1])
+> print(bt.float()) # tensor([1., 0., 0., 1.])
+> ```
+
+#### Concatenate
+
+> 두 텐서를 연결하는 방법 - torch.cat([ ]) 사용
+>
+> ```python
+> x = torch.LongTensor([[1, 2], [3, 4]])
+> y = torch.Longtensor([[5, 6], [7, 8]])
+> 
+> print(torch.cat([x, y], dim=0)) # 첫 번째 차원을 늘려라
+> # tensor([[1, 2], [3, 4], [5, 6], [7, 8]])
+> ```
+>
+> * 원래 텐서를 변경하지는 않는다. 합쳐진 텐서를 반환할 뿐
+> * 자료형이 다른 두 텐서를 연결할경우 더 유효자리가 많은 텐서의 자료형을 따라간다.
+
+#### Stacking
+
+> 연결하는 다른 방법
+>
+> ```python
+> x = torch.LongTensor([1, 4])
+> y = torch.LongTensor([2, 5])
+> z = torch.LongTensor([3, 6])
+> 
+> print(torch.stack([x, y, z]))
+> # tensor([[1, 4], [2, 5], [3, 6]])
+> 
+> print(torch.stack([x, y, z], dim=1)) # 두 번째 차원이 증가하도록 쌓아라
+> # tensor([[1, 2, 3], [4, 5, 6]])
+> ```
+
+#### ones_like, zeros_like
+
+> * ones_like: 1로 채워진 텐서를 만든다
+> * zeros_like: 0으로 채워진 텐서를 만든다
+>
+> ```python
+> x = torch.FloatTensor([[0, 1, 2], [2, 1, 0]])
+> print(x)
+> # tensor([0., 1., 2.], [2., 1., 0.])
+> 
+> print(torch.ones_like(x)) # 입력 텐서와 크기를 통일하게 하면서 값을 1로 채운다
+> # tensor([[1., 1., 1.], [1., 1., 1.]])
+> 
+> print(torch.zeros_like(x)) # 입력 텐서와 크기를 동일하게 하면서 값을 0으로 채운다
+> # tensor([0., 0., 0.,], [0., 0., 0.])
+> ```
+
+#### In-place Operation
+
+> 덮어쓰기 연산
+>
+> ```python
+> x = torch.FLoatTensor([[1, 2], [3, 4]])
+> print(x.mul(2.)) # 곱하기 2를 한 결과
+> # -> tensor([[2., 4.], [6., 8.]])
+> 
+> print(x) # 원래 텐서 출력
+> # -> tensor([[1., 2.], [3., 4.]])
+> ```
+>
+> 값이 덮어씌워지지 않았다
+>
+> 이때 mul_()를 이용하면 값이 덮어씌워진다.
+>
+> ```python
+> print(x.mul_(2.)) # 2를 곱한 결과를 x에 저장후 출력
+> # -> tensor([[2., 4.], [6., 8.]])
+> 
+> print(x)
+> # -> tensor([[2., 4.], [6., 8.]])
+> ```
+
+
+
+## Function and Class
+
+파이썬의 function과 class와 동일함
+
+
+
+## Linear Regression
+
+### Linear Regression
+
+#### 데이터에 대한 이해 (Data Definition)
+
+>* 훈련 데이터셋(training dataset)의 구성   
+>
+>  예측을 위해 사용하는 데이터   
+>
+>  모델을 학습시키기 위한 데이터는 pytorch 텐서의 형태를 가져야 한다.   
+>
+>  입력과 출력을 각기 다른 텐서에 저장할 필요가 있다. 주로 x와 y사용   
+>
+>  ```python
+>  x_train = torch.FloatTensor([[1], [2], [3]])
+>  y_train = torch.FloatTensor([[2], [4], [6]])
+>  ```
+>
+>* 가설 수립
+>
+>  머신러닝에서 식을 세울때 이 식을 가설(Hypothesis)라고 한다.
+>
+>  맞는 가설이 아니라고 판단되면 계속 수정해나가게 되는 식
+>
+>  선형회귀의 경우 선형이므로 H(x) = Wx + b와 같은 식 사용
+>
+>  * W: 가중치 (weight)
+>  * b: 편향 (bias)
+>
+>* Cost function에 대한 이해
+>
+>  = loss function(손실 함수) = error function = objective function(목적 함수)
+>
+>  오차는 MSE(Mean Squared Error)로 구한다. sigma[ ( y_i - H(x_i) )^2 ] / n
+>
+>* 옵티마이저 - Gradient Descent
+>
+>  W와 b에 따른 cost는 빗살무늬 토기 모양의 그래프를 그린다 -> 경사하강법으로 토기의 맨 밑바닥을 찾는 것
+>
+>  * 임의의 초기값 W와 b를 정한다
+>  * 오차의 밑바닥을 향해서 조금씩 다가간다
+>  * 오차가 최소화 되는 지점은 접선의 기울기가 0이 되는 지점이며 미분값이 0이 되는 지점이다.
+
+#### PyTorch로 구현하기
+
+> ```python
+> import torch
+> import torch.nn as nn
+> import torch.nn.functional as F
+> import torch.optim as optim
+> 
+> torch.manual_seed(1)
+> 
+> x_train = torch.FloatTensor([[1], [2], [3]])
+> y_train = torch.FloatTensor([[2], [3], [4]])
+> ```
+>
+> 
