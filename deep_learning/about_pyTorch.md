@@ -448,10 +448,124 @@ reference: https://wikidocs.net/book/2788
 > import torch.nn.functional as F
 > import torch.optim as optim
 > 
+> float cost = 0.0
+> int epoch = 0
+> 
 > torch.manual_seed(1)
 > 
 > x_train = torch.FloatTensor([[1], [2], [3]])
 > y_train = torch.FloatTensor([[2], [3], [4]])
+> 
+> # 가중치 W를 0으로 초기화하고 학습을 통해 값이 변경되는 변수임을 명시함
+> W = torch.zeros(1, requires_grad=True)
+> # requires_grand=True -> 학습을 통해 값이 변경되는 변수임을 의미함
+> 
+> b = torch.zeros(1, requires_grad=True)
+> 
+> while(cost < 0.001):
+> 	epoch += 1
+>     
+> 	# 가설 세우기
+> 	hypothesis = x_train * W + b
+> 
+> 	# define loss function
+> 	cost = torch.mean((hypothesis - y_train)**2)
+> 	print(f"loss = {cost}")
+> 
+> 	# 경사하강법 구현하기
+> 	optimizer = optim.SGD([W, b], lr=0.01)
+> 	# lr: 학습률
+> 
+> 	# gradient를 0으로 초기화
+>     # Pytorch는 미분으로 얻은 기울기를 이전에 계산된 기울기에 누적시키기 때문
+> 	optimizer.zero_grad()
+>     
+> 	# 비용함수를 미분하여 gradient계산
+> 	cost.backward()
+>     
+> 	# W와 b를 업데이트
+> 	optimizer.step()
+>     
+>     if(epoch % 10 == 0):
+>     	print(f"epoch: {epoch} | W: {W.item()} | b: {b.item()}")
+> 	
+> ```
+
+#### 자동 미분(Autograd) 실습
+
+> ```python
+> import torch
+> 
+> w = torch.tensor(2.0, requires_grad=True)
+> 
+> y = w**2
+> z = 2*y + 5
+> 
+> # w에 대한 기울기를 계산한다
+> z.backward()
+> 
+> # 해당 수식을 w에 대해 미분한 값을 출력
+> print("dz/dw = {w.grad}")
+> # dz/dy는 계산할 수 없다
+> ```
+
+#### Multivariable Linear regression
+
+> 여러 개의 x값으로부터 y값을 예측한다.
+>
+> 예: 3개의 퀴즈 점수로부터 최종 점수를 예측하는 모델 제작
+>
+> H(x) = w1x1 + w2x2 + w3x3 + b1 + b2 + b3-> 두 행렬의 내적으로 표현 가능
+>
+> -> H(x) = XW + B
+>
+> ```python
+> import torch
+> import torch.nn as nn
+> import torch.nn.functional as F
+> import torch.optim as optim
+> 
+> x_train = torch.FloatTensor([[73, 80,75], 
+>                              [93, 88, 93], 
+>                              [89, 91, 80], 
+>                              [96, 98, 100], 
+>                              [73, 66, 70]])
+> 
+> y_train = torch.FloatTensor([[152], [185], [180], [196], [142]])
+> 
+> W = torch.zeros((3, 1), requires_grad=True)
+> b = torch.zeros(1, requires_grad=True)
+> 
+> optimizer = optim.SGD([W, b], lr=1e-5)
+> 
+> # model = nn.Linear(3, 1) # input_dim = 3, output_dim=1
+> 
+> for epoch in range(1000):
+> 	hypothesis = x_train.matmul(W) + b
+>     # prediction = model(x_train) 과 동일
+>     
+>     cost = torch.mean((hypothesis - y_train)**2)
+>     # cost = F.mse_loss(prediction, y_train)과 동일
+>     
+>     optimizer.zero_grad()
+>     cost.backward()
+>     optimizer.step()
+>     
+>     print(f"epoch: {epoch} | hypothesis: {hypothesis.squeeze().detach()} | cost: {cost.item()}")
+>     
+> 
+> new_var = torch.FLoatTensor([[73, 80, 75]])
+> pred_y = model(new_var)
+> print(f"예측값: {pred_y}")
+> 
+> #모델에 쓰인 W와 b값 출력
+> print(list(model.parameters()))
+> 
+> ```
+
+#### class 를 이용한 구현
+
+> ```python
 > ```
 >
 > 
