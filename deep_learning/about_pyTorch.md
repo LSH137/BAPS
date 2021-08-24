@@ -563,9 +563,46 @@ reference: https://wikidocs.net/book/2788
 > 
 > ```
 
-#### class 를 이용한 구현
+#### class 를 이용한 다중 선형 회귀 구현
 
 > ```python
+> import torch
+> import torch.nn as nn
+> import torch.nn.functional as F
+> 
+> class MultivariateLinearRegressionModel(nn.Module):
+>     def __init__(self):
+>         super().__init()
+>         self.linear = nnLinear(3, 1)
+>        
+>     def forward(self, x):
+>         return self.linear(x)
+> 
+> if __name__ == __main__:
+>     #data
+> 	x_train = torch.FloatTensor([[73, 80,75], 
+>     	                         [93, 88, 93], 
+>         	                     [89, 91, 80], 
+>             	                 [96, 98, 100], 
+>                 	             [73, 66, 70]])
+> 
+> 	y_train = torch.FloatTensor([[152], [185], [180], [196], [142]])
+>     
+>     #model
+>     model = MultivariateLinearRegressionModel()
+>     optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
+>     
+>     for epoch in range(2000):
+>         prediction = model(x_train)
+>         
+>         cost = F.mse_loss(prediction, y_train)
+>         optimizer.zero_grad()
+>         cost.backward()
+>         optimizer.step()
+>         
+>         if epoch % 100 == 0:
+>             print(f"Epoch: {epoch}/2000 | cost: {cost.item()}")
+> 
 > ```
 >
 > 
