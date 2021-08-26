@@ -3,8 +3,7 @@ from urllib.parse import urlencode, unquote, quote_plus
 import urllib 
 import requests 
 import json 
-import pandas as pd
-
+import pandas as pd # 두 연결 관계를 ㅌㅇ해 종속관계를 찾음.
 
 position = { 
     '속초' : 90,
@@ -25,7 +24,7 @@ position = {
     '수원' : 119,
     '영월' : 121,
     '충주' : 127,
-    '서산' : 129,
+    '서산' : 129, 
     '울진' : 130,
     '청주' : 131,
     '대전' : 133,
@@ -130,3 +129,5 @@ print(dic)
 입력할 수 있게 함
 시작 시간도 하면 엑셀의 형태를 가져와 돌리면 기상데이터를 가져올 수 있다. 
 '''
+
+# result.py에서 지역 번호와 시작 날짜를 가져오면 이를 통해 기상 데이터를 가져온다.
