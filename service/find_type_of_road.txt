@@ -1,0 +1,9 @@
+#인근의 도로 종류를 찾습니다. (키워드 : 터널, 교량, 교차로, 고가도로 등 가능)
+import requests
+
+url = 'https://dapi.kakao.com/v2/local/search/keyword.json?'
+headers = {"Authorization" : "KakaoAK 당신의 키를 입력하세요" }
+params = {'x':127.1086228 , 'y' : 37.4012191, 'radius':200, 'query':'교량'}
+#x, y: 중심 좌표(현위치), radius : 탐색 반경, query : 검색어 
+places = requests.get(url, params=params, headers=headers).json()['meta']['total_count']
+print(places)
