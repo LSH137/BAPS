@@ -709,10 +709,10 @@ reference: https://wikidocs.net/book/2788
 >   ```python
 >   import torch
 >   import torch.nn.functional as F
->     
+>                   
 >   from torch.utils.data import Dataset
 >   from torch.utils.data import DataLoader
->     
+>                   
 >   class CustomDataset(Dataset):
 >       def __init__(self):
 >           self.x_data = [[1, 2, 3],
@@ -720,40 +720,40 @@ reference: https://wikidocs.net/book/2788
 >                         [7, 8, 9].
 >                         [10, 11, 12]]
 >           self.y_data = [[1], [2], [3], [4]]
->             
+>                           
 >       def __len__(self):
 >           return len(self.x_data)
->         
+>                       
 >       def __getitem__(self, idx):
 >           x = torch.FloatTensor(self.x_data[idx])
 >           y = torch.Floattensor(self.y_data[idx])
 >           return (x, y)
->         
+>                       
 >   if __name__ == "__main__":
 >       dataset = CustomDataset()
 >       dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
->         
+>                       
 >       model = torch.nn.Linear(3, 1)
 >       optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
->         
+>                       
 >       nb_epochs = 20
 >       for epoch in range(nb_epochs + 1):
 >           for batch_idx, samples, in enumerate(dataloader):
 >               x_train, y_train = samples
->                 
+>                               
 >               prediction = model(x_train)
 >               cost = F.mse_loss(prediction, y_train)
->                 
+>                               
 >               optimizer.zero_grad()
 >               cost.backward()
 >               optimizer.step()
->                 
+>                               
 >               print("Epoch: ...")
->                 
+>                               
 >       new_var = torch.FloatTensor([[73, 80, 75]])
 >       pred_y = model(new_var)
 >       print("훈련 후 입력이 73, 80, 75일때 예측값: ", pred_y)
->         
+>                       
 >   ```
 
 ### Logstic Regression
@@ -769,55 +769,57 @@ reference: https://wikidocs.net/book/2788
 > * W와 b의 의미를 알아보자
 >
 >   ```python
->   import numpy as np
->   import matplotlib.pyplot as plt
->   
->   def sigmoid(x, w, b):
->       return 1/(1 + np.exp(-x*w+b))
->   
->   
->   x = np.arange(-5.0, 5.0, 0.1)
->   y1 = sigmoid(x, 0.5, 0)
->   y2 = sigmoid(x, 1, 0)
->   y3 = sigmoid(x, 2, 0)
->   
->   plt.plot(x, y1, "r", linestyle='--')
->   plt.plot(x, y2, 'g')
->   plt.plot(x, y3, 'b', linestyle='--')
->   plt.plot([0, 0], [1.0, 0.0], ":")
->   plt.title("sigmoid function")
->   plt.show()
->   ```
+>   import numpy as np   
+>   import matplotlib.pyplot as plt   
 >
+>   def sigmoid(x, w, b):   
+>       return 1/(1 + np.exp(-x*w+b))   
+>
+>   x = np.arange(-5.0, 5.0, 0.1)   
+>   y1 = sigmoid(x, 0.5, 0)   
+>   y2 = sigmoid(x, 1, 0)    
+>   y3 = sigmoid(x, 2, 0)    
+>
+>   plt.plot(x, y1, "r", linestyle='--')   
+>   plt.plot(x, y2, 'g')   
+>   plt.plot(x, y3, 'b', linestyle='--')   
+>   plt.plot([0, 0], [1.0, 0.0], ":")   
+>   plt.title("sigmoid function")   
+>   plt.show()   
+>   ```
 >   ```python
->   import numpy as np
->   import matplotlib.pyplot as plt
->   
->   def sigmoid(x, w, b):
->       return 1/(1 + np.exp(-x*w+b))
->   
->   
->   x = np.arange(-5.0, 5.0, 0.1)
->   y1 = sigmoid(x, 1, -5)
->   y2 = sigmoid(x, 1, 0)
->   y3 = sigmoid(x, 1, 5)
->   
->   plt.plot(x, y1, "r", linestyle='--')
->   plt.plot(x, y2, 'g')
->   plt.plot(x, y3, 'b', linestyle='--')
->   plt.plot([0, 0], [1.0, 0.0], ":")
->   plt.title("sigmoid function")
->   plt.show()
+>   import numpy as np   
+>   import matplotlib.pyplot as plt   
+>
+> 	  def sigmoid(x, w, b):   
+>       return 1/(1 + np.exp(-x*w+b))   
+>
+> 	x = np.arange(-5.0, 5.0, 0.1)   
+>   y1 = sigmoid(x, 1, -5)   
+>   y2 = sigmoid(x, 1, 0)   
+>   y3 = sigmoid(x, 1, 5)   
+>
+> 	plt.plot(x, y1, "r", linestyle='--')   
+>   plt.plot(x, y2, 'g')   
+>   plt.plot(x, y3, 'b', linestyle='--')   
+>   plt.plot([0, 0], [1.0, 0.0], ":")   
+>   plt.title("sigmoid function")   
+>   plt.show()   
+>
 >   ```
 >
->   * W값이 커질수록 그래프가 급격하게 증가한다
+>  * W값이 커질수록 그래프가 급격하게 증가한다
 >   * b값에 따라 그래프가 좌우로 이동한다
 >
 > * sigmoid 함수의 Cost function
 >
->   선형회귀에서 사용했던 평균 제곱 오차를 cost function으로 사용할 경우 여러 개의 극소값을 가지게 된다.
+>  선형회귀에서 사용했던 평균 제곱 오차를 cost function으로 사용할 경우 여러 개의 극소값을 가지게 된다.
 >
->   -> cost function으로 log함수를 사용한다
+>  -> cost function으로 log함수를 사용한다
 >
->   
+> y = 1 -> cost(H(x), y) = -log(H(x))
+>
+> y = 0 -> cost(H(x), y) = -log(1-H(x))
+>
+> 
 
