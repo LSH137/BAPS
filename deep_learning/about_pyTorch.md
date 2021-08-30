@@ -821,5 +821,110 @@ reference: https://wikidocs.net/book/2788
 >
 > y = 0 -> cost(H(x), y) = -log(1-H(x))
 >
+> -> cost(H(x), y) = [ylogH(x) + (1-y)log(1-H(x))]
+>
+> cost(W) = -1/n * sigma(y_i * logH(x_i) + (1 - y_i)log(1-H(x_i)))
+
+#### Logistic regression 
+
+> ```python
+> import torch
+> import torch.nn as nn
+> import torch.nn.functional as F
+> import torch.optim as optim
 > 
+> x_data = [[1, 2], [2, 3], [3, 4], [4, 3], [5, 3], [6, 2]]
+> y_data = [[0], [0], [0], [1], [1], [1]]
+> 
+> x_train = torch.FLoatTensor(x_data)
+> y_train = torch.FloatTensor(y_data)
+> 
+> W = torch.zeros((2, 1), requires_grad=True)
+> b = torch.zeros(1, requries_grad=True)
+> 
+> optimizer = optim.SGD([W, b], lr=1)
+> 
+> nb_epoch = 1000
+> for epoch in range(nb_epoch):
+>     hypothesis = 1 / (1 + torch.exp(-(x_train.matmul(W) + b)))
+> 	# hypothesis = torch.sigmoid(x_train.matmul(W) + b)
+>     
+>     cost = -(y_train * torch.log(hypothesis) + (1-y_train) * torch.log(1 - hypothesis)).mean()
+>     # cost = F.binary_cross_entropy(hypothesis, y_train)
+> 	
+>     optimizer.zeor_grad()
+>     cost.backward()
+>     optimizer.step()
+> 
+> x_test = [[10, 20], [20, 30], [3, 40], [64, 36], [54, 34], [63, 22]]
+> hypothesis = torch.sigmoid(x_test.matmul(W) + b)
+> print(hypothesis) # 값 반환
+> ```
+
+#### Logistic regression with nn.Module
+
+> ```python
+> import torch
+> import torch.nn as nn
+> import torch.nn.functional as F
+> import torch.optim as optim
+> 
+> x_data = [[1, 2], [2, 3], [3, 4], [4, 3], [5, 3], [6, 2]]
+> y_data = [[0], [0], [0], [1], [1], [1]]
+> 
+> x_train = torch.FLoatTensor(x_data)
+> y_train = torch.FloatTensor(y_data)
+> 
+> model = nn.Sequential(nn.Linear(2, 1), # input dim = 2, output dim = 1 
+>                       nn.Sigmoid()) # 출력은 시그모이드 함수를 거친다
+> 
+> nb_epochs = 1000
+> for epochs in range(nb_epochs):
+>     hypothesis = model(x_train)
+>     
+>     cost = F.binary_cross_entropy(hypothesis, y_train)
+>     
+>     optimizer.zero_grad()
+>     cost.backward()
+>     optimizer.step()
+>     
+>     # prediction = (hypothesus >= torch.FloatTensor([0.5]))
+>     # 0.5를 넘으면 True간주
+>     # correct_prediction = (prediction.float() == y_train)
+>     # 실제값과 일치하면 True로 
+>     # accuracy = correct_prediction.sum().item() / len(correct_prediction)
+>     # 정확도 계산
+>     
+> print(list(model.parameters()))
+> # W와 b를 출력
+> ```
+
+#### Logistic regression with class
+
+> ```python
+> import torch
+> import torch.nn as nn
+> import torch.nn.functional as F
+> import torch.optim as optim
+> 
+> class BinaryClassifier(nn.Module):
+>     def __init__(self):
+>         super().__init__() # nn.Module의 속성들을 가지고 초기화
+>         self.linear = nn.Linear(2, 1)
+>         self.sigmoid = nn.Sigmoid()
+>         
+>     def forward(self, x):
+>         return self.sigmoid(self.linear(x))
+> 
+> if __name__ == "__main__":
+>     x_data = [[1, 2], [2, 3], [3, 4], [4, 3], [5, 3], [6, 2]]
+> 	y_data = [[0], [0], [0], [1], [1], [1]]
+> 
+> 	x_train = torch.FLoatTensor(x_data)
+> 	y_train = torch.FloatTensor(y_data)
+>     
+>     model = BinaryClassifier()
+>     # 이하동일
+
+### Aritificial Neural Network
 
