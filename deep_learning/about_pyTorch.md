@@ -709,10 +709,10 @@ reference: https://wikidocs.net/book/2788
 >   ```python
 >   import torch
 >   import torch.nn.functional as F
->                   
+>                     
 >   from torch.utils.data import Dataset
 >   from torch.utils.data import DataLoader
->                   
+>                     
 >   class CustomDataset(Dataset):
 >       def __init__(self):
 >           self.x_data = [[1, 2, 3],
@@ -720,40 +720,40 @@ reference: https://wikidocs.net/book/2788
 >                         [7, 8, 9].
 >                         [10, 11, 12]]
 >           self.y_data = [[1], [2], [3], [4]]
->                           
+>                             
 >       def __len__(self):
 >           return len(self.x_data)
->                       
+>                         
 >       def __getitem__(self, idx):
 >           x = torch.FloatTensor(self.x_data[idx])
 >           y = torch.Floattensor(self.y_data[idx])
 >           return (x, y)
->                       
+>                         
 >   if __name__ == "__main__":
 >       dataset = CustomDataset()
 >       dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
->                       
+>                         
 >       model = torch.nn.Linear(3, 1)
 >       optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
->                       
+>                         
 >       nb_epochs = 20
 >       for epoch in range(nb_epochs + 1):
 >           for batch_idx, samples, in enumerate(dataloader):
 >               x_train, y_train = samples
->                               
+>                                 
 >               prediction = model(x_train)
 >               cost = F.mse_loss(prediction, y_train)
->                               
+>                                 
 >               optimizer.zero_grad()
 >               cost.backward()
 >               optimizer.step()
->                               
+>                                 
 >               print("Epoch: ...")
->                               
+>                                 
 >       new_var = torch.FloatTensor([[73, 80, 75]])
 >       pred_y = model(new_var)
 >       print("훈련 후 입력이 73, 80, 75일때 예측값: ", pred_y)
->                       
+>                         
 >   ```
 
 ### Logstic Regression
@@ -927,4 +927,70 @@ reference: https://wikidocs.net/book/2788
 >     # 이하동일
 
 ### Aritificial Neural Network
+
+#### 머신러닝 모델의 평가
+
+> 전체 데이터를 훈련, 검증, 테스트로 분할하여 사용한다.
+>
+> * 검증용: 모델의 성능을 조정하기 위한 용도. 과적합이 되고 있는지 판단하거나 하이퍼 파라미터의 조정을 위한 용도.
+>
+>   * 하이퍼파라미터: 값에 따라서 모델의 성능에 영향을 주는 매개변수. 보통 사용자가 직접 정해줄 수 있는 변수. 학습률, 은닉층 수, 뉴런의 수, 드롭아웃 비율 등이 해당됨
+>   * 매개변수: 기계가 훈련을 통해 바꾸는 변수.
+>
+>   훈련용 데이터로 훈련을 시킨 모델은 검증용 데이터를 사용하여 정확도를 검증하며 하이퍼파라미터를 튜닝한다. 
+>
+>   이후 모델의 성능을 테스트 하기 위해 테스트 데이터를 사용한다.
+
+#### Sample and feature
+
+> * sample: 하나의 데이터 행
+> * feature: 종속변수 y를 예측하기 위한 각각의 독립 변수
+
+#### 혼동행렬 (Confusion Matrix)
+
+> * 정확도: 맞춘 문제수 / 전체 문제 수
+>
+> * 혼동행렬: 각 열은 예측값을, 각 행은 실제 값을 나타낸다.
+>
+>   [[TP, FN], [FP, TN]] # True: 정답, False: 오답, Positive: True라고 예상, Negative: False라고 예상
+
+#### 정밀도(Precision)
+
+> True라고 대답한 전체 케이스에 대한 TP(True Positive)의 비율
+>
+> * precision = TP/(TP + FP)
+
+#### 재현률(Recall)
+
+> 실제 값이 양성인 데이터의 전체 개수에 대해서 TP의 비율. 양성인 데이터 중에서 얼마나 양성인지를 예측(재현)했는지를 나타냄
+>
+> * 재현률 = TP / (TP + FN)
+
+#### BackPropagation (역전파)
+
+> * 순전파
+>
+>   데이터는 입력층에서 은닉층 방향으로 향하면서 각 입력에 해당하는 가중치(W)가 곱해지고 결과적으로 가중합(sigma W)으로 계산되어 은닉층 뉴런의 시그모이드 함수의 입력값이 된다.    
+>
+>   은닉층 뉴런의 시그모이드함수는 은닉층 뉴런의 최종 출력값(H)이 된다.    
+>
+>   출력값 H는 다시 출력층 뉴런으로 향하며 각각의 값에 해당되는 가중치(W)가 곱해지고 다시 가중합 되어 출력층 뉴런의 시그모이드 함수의 입력값(Z)이 된다    
+>
+>   Z가 출력층 뉴런에서 시그모이드 함수를 지난 값은 이 인공 신경망이 최종적으로 계산한 출력값이다. 
+>
+>   예측값과 실제값의 오차를 MSE로 구한다
+>
+> * 역전파 1단계
+>
+>   순전파가 입력층에서 출력층으로 향한다면 역전파는 반대로 출력층에서 입력층 방향으로 계산하면서 가증치를 업데이트한다.
+>
+>   이때 출력층과 은닉층 사이의 가중치를 업데이트 하는 단계를 역전파1단계, 그리고 은닉층 사이의 가중치를 업데이트하는 단계를 역전파 2단계라고 한다.
+>
+>   각 가중치에 대해 dError/dw_i를 계산한다
+>
+>   이때 chain rule 에 의해 dError/dw_i = dError/d최종결과 * d최종결과/dz_i * dz_i/dw_i 로 계산할 수 있다
+>
+>   w_i,updated = w_i - lr* dError/dw_i를 계산한다
+>
+>   역전파 2단계 역시 같은 방법으로 출력층까지 업데이트하며 나아간다
 
