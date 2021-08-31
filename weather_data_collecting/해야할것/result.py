@@ -3,7 +3,7 @@ import csv
 f = open('/Users/a00/Desktop/BAPS/BAPS/weather_data_collecting/결과.csv', 'r')#csv 파일의 경로
 rdr = csv.reader(f) #csv파일을 읽습니다.
 for line in rdr:
-    print(line[0]) #각 줄의 데이터를 리스트로 읽습니다.
+    print(line[0], line[3]) #각 줄의 데이터를 리스트로 읽습니다.
 '''
 line[0] : 사고 번호
 line[1] : 사고 시각
@@ -23,4 +23,8 @@ line[13] : 도로 형태
 '''
 f.close()
 
+<<<<<<< Updated upstream:weather_data_collecting/result.py
 # CSV 파일에서 사고 시각과 위치를 가져오는 역할 
+=======
+# CSV 파일에서 사고 일시와 위치를 가져오는 역할
+>>>>>>> Stashed changes:weather_data_collecting/해야할것/result.py

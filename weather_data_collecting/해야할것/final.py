@@ -1,9 +1,10 @@
 from urllib.request import urlopen 
-from urllib.parse import urlencode, unquote, quote_plus 
+from urllib.parse import urlencode, unquote, quote_plus
 import urllib 
 import requests 
 import json 
-import pandas as pd # 두 연결 관계를 ㅌㅇ해 종속관계를 찾음.
+import pandas as pd
+import csv
 
 position = { 
     '속초' : 90,
@@ -103,30 +104,60 @@ position = {
     '남해' : 295
 }
 
-url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
-queryParams = '?' + urlencode({ quote_plus('ServiceKey') : 'ol01kPg%2BpHOWuQZmRQmSc%2FtoW07yZ%2BZMGDokNgR2Q2F7rsx8wmL7D3j1QSOKsyZm0Am%2F0ko6FHX%2FZye2sXyQAQ%3D%3D', 
+f = open('/Users/a00/Downloads/결과.csv', 'r')#csv 파일의 경로
+rdr = csv.reader(f) #csv파일을 읽습니다.
+
+for line in rdr:
+    print(line[0], line[3]) #각 줄의 데이터를 리스트로 읽습니다.
+    if line[3] in position:
+        area = line[3]
+''' 참고 하기
+line[0] : 사고 번호--> 날짜를 출력하게 됨.
+line[1] : 사고 시각
+line[2] : 사고 요일
+line[3] : 사고 위치
+line[4] : 사고 내용
+line[5] : 사망자 수
+line[6] : 중상자 수
+line[7] : 경상자 수
+line[8] : 부상신고자 수
+line[9] : 사고 유형
+line[10] : 법규 위반
+line[11] : 노면 상태
+line[12] : 기상 상태
+line[13] : 도로 형태
+...이하 csv 파일 참고
+'''
+
+
+
+url = 'http://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList'
+queryParams = '?' + urlencode({ quote_plus('ServiceKey') : 'CLc5ewH3OFHBoz8idVj7vwmnjozhMiLB98sIf2BHZdI0NE5BuMvqY4gJhDb%2FGjYGvmuDpJa1N5hpammDWwLYkA%3D%3D', #키를 넣어야 API를 사용가능
                                quote_plus('pageNo') : '1', 
                                quote_plus('numOfRows') : '10', 
                                quote_plus('dataType') : 'json', 
                                quote_plus('dataCd') : 'ASOS', 
-                               quote_plus('dateCd') : 'HR', 
-                               quote_plus('startDt') : '20100101', #시작 날짜 
-                               quote_plus('startHh') : '01', #시작 시각
-                               quote_plus('endDt') : '20100101', #종료 날짜 
-                               quote_plus('endHh') : '02',  # 종료 시각
-                               quote_plus('stnIds') : '108' })# 지역번호
+                               quote_plus('dateCd') : 'DAY', 
+                               quote_plus('startDt') : '20100101', #시작 날짜--> 사고 날짜
+                               #quote_plus('startHh') : '01', #시작 시--> 사고 당일 사건 시간
+                               quote_plus('endDt') : '20100101', #종료 날짜--> 같은 날짜
+                               #quote_plus('endHh') : '02',  # 한 시가의 차이가 나야한다.
+                               quote_plus('stnIds') : '211' })
 req = urllib.request.Request(url + unquote(queryParams))
 response_body = urlopen(req).read()
 dic=json.loads(response_body)
 print(dic)
 
-''''
-어떤 지역에 몇 번의 지역번호를 가지고 있는지 딕셔너리로 구현 키 = 지역 이름, 벨류를 지역번호
-들어온 텍스트에서 지역번호 찾아 입력 번호 검색핫 ㅜ 있게
+print("지역명 "+dic['response']['body']['items']['item'][0]['stnNm']) #지역명
+print("기온 "+dic['response']['body']['items']['item'][0]['minTa']) #기온
+print("강수량 "+dic['response']['body']['items']['item'][0]['sumRn']) #강수량
+print("풍속 "+dic['response']['body']['items']['item'][0]['avgWs']) #풍속
+print("습도 "+dic['response']['body']['items']['item'][0]['avgRhm']) #습도
+print("적설 "+dic['response']['body']['items']['item'][0]['ddMes']) #적설
 
-날짜와 시간 데이터에서 위의 형식으로 바꿔준다.
-입력할 수 있게 함
-시작 시간도 하면 엑셀의 형태를 가져와 돌리면 기상데이터를 가져올 수 있다. 
-'''
+f.close()
 
-# 지역번호를 가져오기 위함.
+#====== 
+
+
+# CSV 파일에서 사고 시각과 위치를 가져오는 역할
