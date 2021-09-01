@@ -101,7 +101,6 @@ position = {
     '산청' : 289,
     '거제' : 294,
     '남해' : 295
-
 }
 
 url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
@@ -130,4 +129,4 @@ print(dic)
 시작 시간도 하면 엑셀의 형태를 가져와 돌리면 기상데이터를 가져올 수 있다. 
 '''
 
-# result.py에서 지역 번호와 시작 날짜를 가져오면 이를 통해 기상 데이터를 가져온다.
+# 지역번호를 가져오기 위함.
