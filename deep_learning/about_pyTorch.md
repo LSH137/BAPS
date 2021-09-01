@@ -709,10 +709,10 @@ reference: https://wikidocs.net/book/2788
 >   ```python
 >   import torch
 >   import torch.nn.functional as F
->                     
+>                       
 >   from torch.utils.data import Dataset
 >   from torch.utils.data import DataLoader
->                     
+>                       
 >   class CustomDataset(Dataset):
 >       def __init__(self):
 >           self.x_data = [[1, 2, 3],
@@ -720,40 +720,40 @@ reference: https://wikidocs.net/book/2788
 >                         [7, 8, 9].
 >                         [10, 11, 12]]
 >           self.y_data = [[1], [2], [3], [4]]
->                             
+>                               
 >       def __len__(self):
 >           return len(self.x_data)
->                         
+>                           
 >       def __getitem__(self, idx):
 >           x = torch.FloatTensor(self.x_data[idx])
 >           y = torch.Floattensor(self.y_data[idx])
 >           return (x, y)
->                         
+>                           
 >   if __name__ == "__main__":
 >       dataset = CustomDataset()
 >       dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
->                         
+>                           
 >       model = torch.nn.Linear(3, 1)
 >       optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
->                         
+>                           
 >       nb_epochs = 20
 >       for epoch in range(nb_epochs + 1):
 >           for batch_idx, samples, in enumerate(dataloader):
 >               x_train, y_train = samples
->                                 
+>                                   
 >               prediction = model(x_train)
 >               cost = F.mse_loss(prediction, y_train)
->                                 
+>                                   
 >               optimizer.zero_grad()
 >               cost.backward()
 >               optimizer.step()
->                                 
+>                                   
 >               print("Epoch: ...")
->                                 
+>                                   
 >       new_var = torch.FloatTensor([[73, 80, 75]])
 >       pred_y = model(new_var)
 >       print("훈련 후 입력이 73, 80, 75일때 예측값: ", pred_y)
->                         
+>                           
 >   ```
 
 ### Logstic Regression
@@ -993,4 +993,37 @@ reference: https://wikidocs.net/book/2788
 >   w_i,updated = w_i - lr* dError/dw_i를 계산한다
 >
 >   역전파 2단계 역시 같은 방법으로 출력층까지 업데이트하며 나아간다
+
+### CNN (Convolution Neural Network)
+
+> * 합성곱층(Convolution layer)과 풀림층(Pooling layer)으로 구성된다
+
+#### 합성곱 연산 (Convolution operation)
+
+> 합성곱 연산을 통해서 이미지의 특징을 추출하는 역할을 한다.
+>
+> 커널 또는 필터라는 n x m 크기의 행렬로 높이 x 너비 크기의 이미지를 처음부터 끝까지 겹치며 훑으면서 n x m크기의 겹쳐지는 부분의 각 이미지와 커널의 원소 값을 곱해서 모두 더한 값을 출력하는 것.
+>
+> * 커널은 일반적으로 3x3 또는 5x5를 이용한다
+>
+> 데이터중 커널 크기만큼의 부분을 커널에 곱하여 특성맵을 만든다
+>
+> 한번에 데이터 행렬에서 이동하는 칸의 수를 스트라이드(stride)라고 한다
+>
+> 패딩(입력 데이터의 가장자리에 0을 채우는 것)으로 특성 맵이 입력보다 작아지는 것을 막을 수 있다.
+>
+> * 합성곱 신경망에서는 커널 행렬의 원소들이 가중치 역할을 한다
+> * 합성곱 신경망의 은닉층을 합성곱층 이라고 한다
+> * 편향은 하나의 값만 존재하며 커널이 적용된 결과의 모든 원소에 더해진다
+> * 커널의 수와 채널의 수(3차원 텐서에서 z방향 성분 개수)sms rkxdkdi gksek.
+>
+> 
+
+
+
+----------------------------------------------------------
+
+# 결론
+
+## 다층 퍼셉트론을 이용하여 만들자
 
