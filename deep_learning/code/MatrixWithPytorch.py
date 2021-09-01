@@ -22,5 +22,6 @@ print(t[0:3, 0:2])
 #         [4., 5.],
 #         [7., 8.]])
 
-# Broadcasting
-print("==================== Broadcasting ====================")
+print("==================== iteration ====================")
+for vector in t:
+    print(f"vector = {vector}")

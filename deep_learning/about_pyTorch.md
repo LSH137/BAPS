@@ -128,7 +128,6 @@ reference: https://wikidocs.net/book/2788
 >  m2 = torch.FloatTensor([3]) # [3, 3]으로 연산된다   
 >  print(m1 + m2) # tensor([[4., 5.]])   
 >```
-> -----------------------------------------------------------
 >```python
 >  m1 = torch.FloatTensor([[1, 2]])   
 >  m2 = torch.FloatTensor([[3], [4]])   
@@ -709,10 +708,10 @@ reference: https://wikidocs.net/book/2788
 >   ```python
 >   import torch
 >   import torch.nn.functional as F
->                       
+>                             
 >   from torch.utils.data import Dataset
 >   from torch.utils.data import DataLoader
->                       
+>                             
 >   class CustomDataset(Dataset):
 >       def __init__(self):
 >           self.x_data = [[1, 2, 3],
@@ -720,40 +719,40 @@ reference: https://wikidocs.net/book/2788
 >                         [7, 8, 9].
 >                         [10, 11, 12]]
 >           self.y_data = [[1], [2], [3], [4]]
->                               
+>                                     
 >       def __len__(self):
 >           return len(self.x_data)
->                           
+>                                 
 >       def __getitem__(self, idx):
 >           x = torch.FloatTensor(self.x_data[idx])
 >           y = torch.Floattensor(self.y_data[idx])
 >           return (x, y)
->                           
+>                                 
 >   if __name__ == "__main__":
 >       dataset = CustomDataset()
 >       dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
->                           
+>                                 
 >       model = torch.nn.Linear(3, 1)
 >       optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
->                           
+>                                 
 >       nb_epochs = 20
 >       for epoch in range(nb_epochs + 1):
 >           for batch_idx, samples, in enumerate(dataloader):
 >               x_train, y_train = samples
->                                   
+>                                         
 >               prediction = model(x_train)
 >               cost = F.mse_loss(prediction, y_train)
->                                   
+>                                         
 >               optimizer.zero_grad()
 >               cost.backward()
 >               optimizer.step()
->                                   
+>                                         
 >               print("Epoch: ...")
->                                   
+>                                         
 >       new_var = torch.FloatTensor([[73, 80, 75]])
 >       pred_y = model(new_var)
 >       print("훈련 후 입력이 73, 80, 75일때 예측값: ", pred_y)
->                           
+>                                 
 >   ```
 
 ### Logstic Regression
@@ -1015,7 +1014,7 @@ reference: https://wikidocs.net/book/2788
 > * 합성곱 신경망에서는 커널 행렬의 원소들이 가중치 역할을 한다
 > * 합성곱 신경망의 은닉층을 합성곱층 이라고 한다
 > * 편향은 하나의 값만 존재하며 커널이 적용된 결과의 모든 원소에 더해진다
-> * 커널의 수와 채널의 수(3차원 텐서에서 z방향 성분 개수)sms rkxdkdi gksek.
+> * 커널의 수와 채널의 수(3차원 텐서에서 z방향 성분 개수)는 같아야 한다.
 >
 > 
 
