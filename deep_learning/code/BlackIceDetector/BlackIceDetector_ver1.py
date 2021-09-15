@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split
-from torch.autograd import Variable
-import numpy as np
 import DataSet
 
 SPECIES_OF_DATA = 6 # relative date, temp, wind velocity, road_type, snowfall, rainfall
@@ -29,17 +28,20 @@ if __name__ == "__main__":
     model.add_module('fc2', nn.Linear(hidden_layer1_front, hidden_layer1_rear))
     model.add_module('relu2', nn.ReLU())
     model.add_module('fc3', nn.Linear(hidden_layer2_front, hidden_layer2_rear))
-    model.add_module("softmax1", nn.Softmax())
+    model.add_module("softmax1", nn.Softmax(dim=1))
     model.add_module("fc4", nn.Linear(hidden_layer2_rear, output_layer))
 
     loss_function = torch.nn.BCELoss()
+   
 
     optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
 
     total_x = DataSet.total_x
+    normalizated_x = F.softmax(torch.FloatTensor(total_x), dim=1)
     total_y = DataSet.total_y
+    print(f"dataset:\nx:{list(normalizated_x.numpy())}\ny:{total_y}")
 
-    learning_dataset, test_dataset_x, crash_dataset, test_dataset_y = train_test_split(total_x, total_y, test_size=1/10, random_state=0)
+    learning_dataset, test_dataset_x, crash_dataset, test_dataset_y = train_test_split(normalizated_x, total_y, test_size=1/10, random_state=0)
 
     learning_dataset = torch.FloatTensor(learning_dataset)
     test_dataset_x = torch.FloatTensor(test_dataset_x)
@@ -54,9 +56,10 @@ if __name__ == "__main__":
 
     model.train() # set train mode
     for epoch in range(EPOCH):
-        for data, targets in loader_train:          
-            outputs = model(data)      
-            loss = loss_function(outputs, targets)
+        for data, targets in loader_train:
+            outputs = model(data)
+            normalizated_output = F.softmax(torch.FloatTensor(outputs), dim=1)
+            loss = loss_function(normalizated_output, targets)
 
             optimizer.zero_grad()
             loss.backward()
